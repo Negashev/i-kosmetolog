@@ -1,13 +1,13 @@
 /*
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
-*/
+ Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+ This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+ The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+ The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+ Code distributed by Google as part of the polymer project is also
+ subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+ */
 
-(function(document) {
+(function (document) {
   'use strict';
 
   // Grab a reference to our auto-binding template
@@ -15,21 +15,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // Learn more about auto-binding templates at http://goo.gl/Dx1u2g
   var app = document.querySelector('#app');
 
-  app.displayInstalledToast = function() {
+  app.displayInstalledToast = function () {
     // Check to make sure caching is actually enabled—it won't be in the dev environment.
-    if (!document.querySelector('platinum-sw-cache').disabled) {
-      document.querySelector('#caching-complete').show();
-    }
+    document.querySelector('#caching-complete').show();
   };
+  app.selected = 0;
 
   // Listen for template bound event to know when bindings
   // have resolved and content has been stamped to the page
-  app.addEventListener('dom-change', function() {
+  app.addEventListener('dom-change', function () {
     console.log('Our app is ready to rock!');
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
-  window.addEventListener('WebComponentsReady', function() {
+  window.addEventListener('WebComponentsReady', function () {
     // imports are loaded and elements have been registered
   });
 
@@ -37,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // the appName in the middle-container and the bottom title in the bottom-container.
   // The appName is moved to top and shrunk on condensing. The bottom sub title
   // is shrunk to nothing on condensing.
-  addEventListener('paper-header-transform', function(e) {
+  addEventListener('paper-header-transform', function (e) {
     var appName = document.querySelector('#mainToolbar .app-name');
     var middleContainer = document.querySelector('#mainToolbar .middle-container');
     var bottomContainer = document.querySelector('#mainToolbar .bottom-container');
@@ -45,7 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     var heightDiff = detail.height - detail.condensedHeight;
     var yRatio = Math.min(1, detail.y / heightDiff);
     var maxMiddleScale = 0.50;  // appName max size when condensed. The smaller the number the smaller the condensed size.
-    var scaleMiddle = Math.max(maxMiddleScale, (heightDiff - detail.y) / (heightDiff / (1-maxMiddleScale))  + maxMiddleScale);
+    var scaleMiddle = Math.max(maxMiddleScale, (heightDiff - detail.y) / (heightDiff / (1 - maxMiddleScale)) + maxMiddleScale);
     var scaleBottom = 1 - yRatio;
 
     // Move/translate middleContainer
@@ -59,7 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   });
 
   // Close drawer after menu item is selected if drawerPanel is narrow
-  app.onDataRouteClick = function() {
+  app.onDataRouteClick = function () {
     var drawerPanel = document.querySelector('#paperDrawerPanel');
     if (drawerPanel.narrow) {
       drawerPanel.closeDrawer();
@@ -67,8 +66,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   // Scroll page to top and expand header
-  app.scrollPageToTop = function() {
+  app.scrollPageToTop = function () {
     document.getElementById('mainContainer').scrollTop = 0;
   };
 
+  // return all gsx$_*
+  app.getPropertyByRegex = function (obj) {
+    var re = new RegExp('^(gsx\\$_)'), key, data = [];
+    for (key in obj) {
+      if (re.test(key)) {
+        data.push(obj[key]);
+      }
+    }
+    return data; // put your default "not found" return value here
+  };
+  // filter buttons for toolbar
+  app.onlyButton = function (item) {
+    item.dataForRepeat = app.getPropertyByRegex(item);
+    item['paper-menu-button'] = (item.dataForRepeat.length > 1);
+    return item.gsx$showintoolbar.$t === 'TRUE';
+  };
+  // filter for stock
+  app.onlyStock = function (item) {
+    item.dataForRepeat = app.getPropertyByRegex(item);
+    return item.title.$t === 'Акция';
+  };
+  //action in toolbar for one button
+  app.onTapAction = function (item) {
+    window.location = item.model.item.gsx$httpaction.$t + item.model.item.dataForRepeat[0].$t;
+  };
+  //action in toolbar for menu button
+  app.onTapActionMenu = function (item) {
+    window.location = item.model.item.gsx$httpaction.$t + item.model.data.$t;
+  };
+  // var to markdown h3
+  app.mdeH3 = function (item) {
+    return '### ' + item + ' ###';
+  };
+  app.mdePoint = function (item) {
+    return '* ' + item;
+  };
 })(document);
