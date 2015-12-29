@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- Add to homescreen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Polymer Starter Kit">
+  <meta name="apple-mobile-web-app-title" content="Богиня - Кабинет аппаратной косметологии">
   <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
 
   <!-- Tile icon for Win8 (144x144) -->
@@ -65,15 +65,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <!-- get Info-->
   <google-sheets key="1z4yT3SUjoH7WX3Q6fw1t7hAP-2E9haW-S31e3my7QCE" tab-id="1" published
                  rows="{{info}}"></google-sheets>
+  <iron-localstorage name="info" value="{{info}}"></iron-localstorage>
   <!-- get Social-->
   <google-sheets key="1z4yT3SUjoH7WX3Q6fw1t7hAP-2E9haW-S31e3my7QCE" tab-id="2" published
                  rows="{{social}}"></google-sheets>
+  <iron-localstorage name="social" value="{{social}}"></iron-localstorage>
   <!-- get Prise-->
   <google-sheets key="1z4yT3SUjoH7WX3Q6fw1t7hAP-2E9haW-S31e3my7QCE" tab-id="3" published
                  rows="{{prise}}"></google-sheets>
+  <iron-localstorage name="prise" value="{{prise}}"></iron-localstorage>
   <!-- get Tabs-->
   <google-sheets key="1z4yT3SUjoH7WX3Q6fw1t7hAP-2E9haW-S31e3my7QCE" tab-id="4" published
                  rows="{{tabs}}"></google-sheets>
+  <iron-localstorage name="tabs" value="{{tabs}}"></iron-localstorage>
   <paper-drawer-panel id="paperDrawerPanel">
     <!-- Drawer Scroll Header Panel -->
     <paper-scroll-header-panel drawer fixed>
@@ -85,12 +89,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- Drawer Content -->
       <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
-        <a data-route="home" href="/" on-click="onDataRouteClick">
+        <a data-route="home" href="/" href="{{baseUrl}}">
           <iron-icon icon="home"></iron-icon>
           <span>Главная</span>
         </a>
 
-        <a data-route="prise" href="/prise" on-click="onDataRouteClick">
+        <a data-route="prise" href="{{baseUrl}}prise" on-click="onDataRouteClick">
           <iron-icon icon="editor:format-list-numbered"></iron-icon>
           <span>Цены</span>
         </a>
@@ -111,7 +115,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </paper-scroll-header-panel>
 
     <!-- Main Area -->
-    <paper-scroll-header-panel main condenses keep-condensed-header>
+    <paper-scroll-header-panel main id="headerPanelMain" condenses keep-condensed-header>
 
       <!-- Main Toolbar -->
       <paper-toolbar id="mainToolbar" class="tall">
